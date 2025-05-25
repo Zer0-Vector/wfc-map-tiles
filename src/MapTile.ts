@@ -1,8 +1,6 @@
-type Direction = "N" | "S" | "E" | "W";
-
-interface MapTile {
+export interface MapTile {
   id: string;
   name?: string;
-  edges: Record<Direction, TileEdge>;
-  edge(edgeDirection: Direction): TileEdge;
+  edges: Record<string, TileEdge>;
+  fitsWith(tile: MapTile, edgeId: string): boolean;
 }

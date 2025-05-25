@@ -1,4 +1,5 @@
+import { MapTile } from "./MapTile";
 
-interface MapTileWFCConfig {
+export interface MapTileWFCConfig {
   tiles: MapTile[];
 }
