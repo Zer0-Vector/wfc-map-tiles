@@ -1,3 +1,0 @@
-interface TileEdge {
-  id: string;
-}
