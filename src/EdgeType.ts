@@ -1,3 +1,3 @@
-interface EdgeType {
+export interface EdgeType {
   id: string;
 }

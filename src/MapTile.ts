@@ -1,3 +1,4 @@
+import type { EdgeType } from "./EdgeType";
 
 export type CardinalDirection = "N" | "S" | "E" | "W";
 export type Direction = CardinalDirection | (string & {});
