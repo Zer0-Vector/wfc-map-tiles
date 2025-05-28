@@ -1,7 +1,7 @@
 # TileSet object
 # JSONPath can be used to reference other fields using `${}`
 # NOTE: if JSONPath references an array as an array element, that array will be flattened, i.e. it will merge the referenced array into the current array; rather than added an element that is an array
-name: My TileSet
+name: Example TileSet
 options: # defaults shown below
   # TODO: list supported units
   defaultUnit: "cell"   # all lengths will default to this unit if none is given
@@ -10,7 +10,7 @@ options: # defaults shown below
 # Edges are lines/curves that start go from *point A* to *point B*.
 sizes: # No units assumes cells if `cellSize` is set; otherwise, uses px or defaultUnit
   small: 15
-  normal: 2 small # other sizes can be used as units (careful of recursion)
+  normal: 2 small # other sizes can be used as units (careful of recursion; it will throw an error)
   large: 2 normal
 types: # read keys as "types of X"
   edge:
