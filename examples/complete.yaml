@@ -2,12 +2,11 @@
 # JSON Path can be used to reference other fields
 # To type a '$', use two, i.e. '$$' resolves to '$'
 name: My TileSet
-options:
+options: # defaults shown below
   # TODO: list supported units
-  # defaultUnit: "cell"   # all lengths will default to this unit if none is given
-  # cellSize: 70px
-  # equalNamesMatch: true
-  # transativeMatches: true # A matches B and B matches C, then A matches C
+  defaultUnit: "cell"   # all lengths will default to this unit if none is given
+  cellSize: 70px
+  transativeMatches: true # A matches B and B matches C, then A matches C
 # Edges are lines/curves that start go from *point A* to *point B*.
 sizes: # No units assumes cells if `cellSize` is set; otherwise, uses px or defaultUnit
   small: 15
