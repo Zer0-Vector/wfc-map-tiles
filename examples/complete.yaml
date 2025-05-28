@@ -27,11 +27,15 @@ types: # read keys as "types of X"
       matches: [2door, 2door] # `options.transitiveMatches==true` means [1door, 1door, 1door, 1door] also matches.
   tile: # defines the edges of a tile image in its default orientation
     central1:
-      # $.types.tile.edges => array order: N, S, E, W; or use keys 'N:' or 'north:'
-      edges: 2door
+      edges: 2door # single value applies to all 4 edges
     central2:
-      size: [large, normal] # [width, height]
-      edges: [4door, 2door] # n/s, e/w
+      width: large
+      height: normal
+      edges: 
+        top: 4door
+        left: 2door
+        rotation: [90, -90]
+
   map:
   - id: base
     boundaries: # array of edges that can be found along the boundary
