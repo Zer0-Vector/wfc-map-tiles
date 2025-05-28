@@ -1,0 +1,48 @@
+# TileSet object
+# JSON Path can be used to reference other fields
+# To type a '$', use two, i.e. '$$' resolves to '$'
+name: My TileSet
+options:
+  # TODO: list supported units
+  # defaultUnit: "cell"   # all lengths will default to this unit if none is given
+  # cellSize: 70px
+  # equalNamesMatch: true
+  # transativeMatches: true # A matches B and B matches C, then A matches C
+# Edges are lines/curves that start go from *point A* to *point B*.
+sizes: # No units assumes cells if `cellSize` is set; otherwise, uses px or defaultUnit
+  small: 15
+  normal: 2 small # other sizes can be used as units (careful of recursion)
+  large: 2 normal
+types: # read keys as "types of X"
+  edge:
+    - wall # i.e. `{ id: wall, size: $.sizes }`; 
+    # if `size === undefined`, then `size === $.sizes`
+    # `$.sizes` references is equialent to the array of keys of the `sizes` object, e.g. `$.sizes === [small, normal, large]`; 
+    - id: 1door
+      size: small
+    - id: 2door
+      size: normal
+      matches: [1door, 1door]
+    - id: 4door
+      size: large
+      matches: [2door, 2door] # `options.transitiveMatches==true` means [1door, 1door, 1door, 1door] also matches.
+  tile: # defines the edges of a tile image in its default orientation
+    central1:
+      # $.types.tile.edges => array order: N, S, E, W; or use keys 'N:' or 'north:'
+      edges: 2door
+    central2:
+      size: [large, normal] # [width, height]
+      edges: [4door, 2door] # n/s, e/w
+  map:
+  - id: base
+    boundaries: # array of edges that can be found along the boundary
+      - $.boundaries
+      - 1door
+      - 2door
+  - ship
+  - station
+boundaries: # edges that can be map boundaries
+  - wall
+images:
+  # TODO
+
