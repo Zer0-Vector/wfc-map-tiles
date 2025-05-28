@@ -1,6 +1,6 @@
 # TileSet object
-# JSON Path can be used to reference other fields
-# To type a '$', use two, i.e. '$$' resolves to '$'
+# JSONPath can be used to reference other fields using `${}`
+# NOTE: if JSONPath references an array as an array element, that array will be flattened, i.e. it will merge the referenced array into the current array; rather than added an element that is an array
 name: My TileSet
 options: # defaults shown below
   # TODO: list supported units
@@ -14,9 +14,8 @@ sizes: # No units assumes cells if `cellSize` is set; otherwise, uses px or defa
   large: 2 normal
 types: # read keys as "types of X"
   edge:
-    - wall # i.e. `{ id: wall, size: $.sizes }`; 
-    # if `size === undefined`, then `size === $.sizes`
-    # `$.sizes` references is equialent to the array of keys of the `sizes` object, e.g. `$.sizes === [small, normal, large]`; 
+    - wall # i.e. `{ id: wall, size: "${$.sizes}" }`; 
+    # if `size === undefined`, then `size === ${$.sizes}`
     - id: 1door
       size: small
     - id: 2door
@@ -39,7 +38,7 @@ types: # read keys as "types of X"
   map:
   - id: base
     boundaries: # array of edges that can be found along the boundary
-      - $.boundaries
+      - ${$.boundaries}
       - 1door
       - 2door
   - ship
