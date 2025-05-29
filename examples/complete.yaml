@@ -47,7 +47,13 @@ types: # read keys as "types of X"
         top: 4door
         left: 2door
         rotation: [90, -90]
-
+    edge1:
+      width: normal
+      height: small
+      edges:
+        top: 2door
+        left: 1door
+        bottom: $boundary # means this tile can only go at the edge/boundary of the map; i.e. no tiles can be adjacent to this side
   map:
   - id: base
     boundaries: # array of edges that can be found along the boundary
