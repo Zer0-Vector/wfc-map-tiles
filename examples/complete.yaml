@@ -12,20 +12,20 @@ sizes: # No units assumes cells if `cellSize` is set; otherwise, uses px or defa
   small: 15
   normal: 2 small # other sizes can be used as units (careful of recursion; it will throw an error)
   large: 2 normal
-types: # read keys as "types of X"
-  $defaults:
+$defaults:
+  types:
     tile:
-      size: normal
-    # default `$defaults`
-    #####################
-    # tile:
-    #   bottom: ${.top}
-    #   right: ${.left}
-    #   reflection:
-    #     vertical: false
-    #     horizontal: false
-    #   rotation: [90, 180, 270] # negative angles work, too
-    #####################
+      size: normal 
+      # this looks odd, but it works as long as you define one on each axis
+      bottom: ${.top}
+      right: ${.left}
+      top: ${.bottom}
+      left: ${.right}
+      reflection:
+        vertical: false
+        horizontal: false
+      rotation: [90, 180, 270] # negative angles work, too
+types: # read keys as "types of X"
   edge:
     - wall # i.e. `{ id: wall, size: "${$.sizes}" }`; 
     # if `size === undefined`, then `size === ${$.sizes}`
