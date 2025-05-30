@@ -65,5 +65,19 @@ types: # read keys as "types of X"
 boundaries: # edges that can be map boundaries
   - wall
 images:
-  # TODO
+  rootDirs: 
+    - "/path/to/image/directories/**/*" # use globs to specify inclusions
+    - "/only/this/dir/not/subdirs/*"
+  typeDirectories: true # look for subdirectories under `rootDirs` named after the tile types
+  # global includes/excludes
+  includes: 
+    - "**/*.webp"
+  excludes:
+    - "**/*.gif"
+  types:
+    central1:
+      includes: # array of paths to include. 
+        - some/file/under/rootdir/path.jpeg # can be files, directories, or globs
+        - "/absolute/path/is/absolute/*.{png|jpg}" # will also look for global `includes` glob; add global glob to excludes if needed
+    central2: "relative/path/nested/in/base/path/*.webp" # A type mapped to a single path value is the same as `includes` with the same value.
 
