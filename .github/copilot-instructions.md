@@ -20,6 +20,7 @@ The project uses a sophisticated YAML-based tile definition system (`examples/co
 - Rotation/reflection metadata for tile variants
 
 ## Coding Standards
+- Use test-driven development (TDD) practices.
 - TypeScript with strict typing
 - Functional programming principles where applicable
 - Clear separation of concerns between model, helpers, and UI components
