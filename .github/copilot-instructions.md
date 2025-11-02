@@ -24,7 +24,9 @@ The project uses a sophisticated YAML-based tile definition system (`examples/co
 - TypeScript with strict typing
 - Functional programming principles where applicable
 - Clear separation of concerns between model, helpers, and UI components
-- Comprehensive JSDoc comments for public interfaces
+- Add comprehensive JSDoc comments for public methods and properties
+- Prefer arrow functions for callbacks and functional components
+- Use async/await for asynchronous code
 - Use `get` and `set` keywords for property accessors instead of methods.
 - Avoid using `any` type; prefer specific types or generics.
 - Use interfaces for data objects instead of classes when no behavior or computation is needed.
