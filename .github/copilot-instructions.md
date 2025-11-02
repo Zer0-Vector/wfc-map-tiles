@@ -19,7 +19,7 @@ The project uses a sophisticated YAML-based tile definition system (`examples/co
 - Size units system with relative sizing (e.g., `2 small`, `normal`)
 - Rotation/reflection metadata for tile variants
 
-## Coding Standards
+## Coding Standards and Style
 - Use test-driven development (TDD) practices.
 - TypeScript with strict typing
 - Functional programming principles where applicable
@@ -29,8 +29,6 @@ The project uses a sophisticated YAML-based tile definition system (`examples/co
 - Avoid using `any` type; prefer specific types or generics.
 - Use interfaces for data objects instead of classes when no behavior or computation is needed.
 - Prefer `for...of` loops over `forEach`.
-
-## Code Style
 - Follow Prettier formatting rules
 - Use ESLint with recommended TypeScript rules
 - Consistent naming conventions (camelCase for variables/functions, PascalCase for types/classes)
