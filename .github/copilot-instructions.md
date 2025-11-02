@@ -26,6 +26,8 @@ The project uses a sophisticated YAML-based tile definition system (`examples/co
 - Comprehensive JSDoc comments for public interfaces
 - Use `get` and `set` keywords for property accessors instead of methods.
 - Avoid using `any` type; prefer specific types or generics.
+- Use interfaces for data objects instead of classes when no behavior or computation is needed.
+- Prefer `for...of` loops over `forEach`.
 
 ## Code Style
 - Follow Prettier formatting rules
@@ -33,6 +35,7 @@ The project uses a sophisticated YAML-based tile definition system (`examples/co
 - Consistent naming conventions (camelCase for variables/functions, PascalCase for types/classes)
 - Always prefer `const` over `let` unless reassignment is necessary
 - Always use block scoping with `{}` for control structures
+- Use double quotes for strings
 
 ## Development Workflow
 
