@@ -1,7 +1,7 @@
 import type { TileDefinition } from './TileDefinition';
 import { WFCCell } from './WFCCell';
 import type { EdgeType } from './EdgeType';
-import type { CardinalDirection } from './MapTile';
+import { CardinalDirection, CardinalDirectionValues } from './MapTile';
 
 export interface GridPosition {
   x: number;
@@ -60,22 +60,14 @@ export class WFCGrid {
   }
 
   getNeighbor(x: number, y: number, direction: CardinalDirection): WFCCell | undefined {
-    const offsets = {
-      N: { x: 0, y: -1 },
-      S: { x: 0, y: 1 },
-      E: { x: 1, y: 0 },
-      W: { x: -1, y: 0 }
-    };
-
-    const offset = offsets[direction];
+    const offset = CardinalDirection[direction].offset;
     return this.getCell(x + offset.x, y + offset.y);
   }
 
   getNeighbors(x: number, y: number): WFCCell[] {
     const neighbors: WFCCell[] = [];
-    const directions: CardinalDirection[] = ['N', 'S', 'E', 'W'];
     
-    for (const direction of directions) {
+    for (const direction of CardinalDirectionValues) {
       const neighbor = this.getNeighbor(x, y, direction);
       if (neighbor) {
         neighbors.push(neighbor);
@@ -129,8 +121,7 @@ export class WFCGrid {
       if (!cell) continue;
 
       // Check each direction
-      const directions: CardinalDirection[] = ['N', 'S', 'E', 'W'];
-      for (const direction of directions) {
+      for (const direction of CardinalDirectionValues) {
         const neighbor = this.getNeighbor(x, y, direction);
         if (!neighbor || neighbor.isCollapsed) continue;
 
@@ -144,13 +135,7 @@ export class WFCGrid {
           }
           
           // Add neighbor to queue for further propagation
-          const offsetMap = {
-            N: { x: 0, y: -1 },
-            S: { x: 0, y: 1 },
-            E: { x: 1, y: 0 },
-            W: { x: -1, y: 0 }
-          };
-          const offset = offsetMap[direction];
+          const offset = CardinalDirection[direction].offset;
           queue.push({ x: x + offset.x, y: y + offset.y });
         }
       }
@@ -173,21 +158,10 @@ export class WFCGrid {
     }
 
     return compatible;
-  }
-
-  // FIXME this is a utility function; refactor to utils module
-  private getOppositeDirection(direction: CardinalDirection): CardinalDirection {
-    const opposites = {
-      N: 'S' as const,
-      S: 'N' as const,
-      E: 'W' as const,
-      W: 'E' as const
-    };
-    return opposites[direction];
-  }
+  }  
 
   private tilesCanConnect(tile1: TileDefinition, tile2: TileDefinition, direction: CardinalDirection): boolean {
-    const oppositeDirection = this.getOppositeDirection(direction);
+    const oppositeDirection = CardinalDirection[direction].opposite;
     const edge1 = tile1.edges[direction];
     const edge2 = tile2.edges[oppositeDirection];
     
