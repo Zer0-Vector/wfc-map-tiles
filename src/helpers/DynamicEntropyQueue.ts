@@ -118,7 +118,29 @@ export class DynamicEntropyQueue<T extends ObservableEntropyItem> {
   }
 
   peek(): T | undefined {
+    if (this.isEmpty) {
+      return undefined;
+    }
+
     return this._items[0];
+  }
+
+  peekEqualEntropy(): T[] {
+    const firstItem = this.peek();
+    if (firstItem === undefined) {
+      return [];
+    }
+
+    const result: T[] = [];
+
+    for (const item of this._items) {
+      if (item.entropy !== firstItem.entropy) {
+        break;
+      }
+      result.push(item);
+    }
+
+    return result;
   }
 
 }
