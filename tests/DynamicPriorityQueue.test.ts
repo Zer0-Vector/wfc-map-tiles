@@ -3,11 +3,60 @@ import { DynamicEntropyQueue, ObservableEntropyItem } from "@/helpers/DynamicEnt
 class TestItem extends ObservableEntropyItem {
   name: string;
 
-  constructor(name: string, priority: number) {
-    super(priority);
+  constructor(name: string, entropy: number) {
+    super(entropy);
     this.name = name;
   }
 }
+
+describe("ObservableEntropyItem", () => {
+  it("constructor sets initial entropy", () => {
+    const item = new TestItem("test", 5);
+    
+    expect(item.entropy).toBe(5);
+  });
+
+  it("sets entropy and notifies observers", () => {
+    const item = new TestItem("test", 5);
+    const mockObserver = vi.fn();
+    const mockObserver2 = vi.fn();
+    item.subscribe("entropyChanged", mockObserver);
+    item.subscribe("entropyChanged", mockObserver2);
+
+    item.entropy = 10;
+
+    expect(item.entropy).toBe(10);
+    expect(mockObserver).toHaveBeenCalledWith({ item, oldValue: 5 });
+    expect(mockObserver).toHaveBeenCalledTimes(1);
+    expect(mockObserver2).toHaveBeenCalledWith({ item, oldValue: 5 });
+    expect(mockObserver2).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not notify observers if entropy is unchanged", () => {
+    const item = new TestItem("test", 5);
+    const mockObserver = vi.fn();
+    item.subscribe("entropyChanged", mockObserver);
+    
+    item.entropy = 5;
+    
+    expect(mockObserver).not.toHaveBeenCalled();
+  });
+
+  it("unsubscribed observers are not notified", () => {
+    const item = new TestItem("test", 5);
+    const mockObserver = vi.fn();
+    const mockObserver2 = vi.fn();
+    item.subscribe("entropyChanged", mockObserver);
+    item.subscribe("entropyChanged", mockObserver2);
+
+    item.entropy = 10;
+    item.unsubscribe("entropyChanged", mockObserver);
+    item.entropy = 15;
+    
+    expect(mockObserver).toHaveBeenCalledTimes(1);
+    expect(mockObserver2).toHaveBeenCalledTimes(2);
+  });
+});
 
 class TestDynamicPriorityQueue extends DynamicEntropyQueue<TestItem> {
   // This simplifies test code and allows exposing internals if needed in the future
