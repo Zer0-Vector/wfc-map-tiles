@@ -38,6 +38,11 @@ describe('WFCSolver', () => {
       expect(() => new WFCSolver(grid, { maxIterations: 500 })).not.toThrow();
     });
 
+    it('should throw if grid is invalid', () => {
+      const invalidGrid = new WFCGrid(0, 0);
+      expect(() => new WFCSolver(invalidGrid)).toThrow();
+    });
+
     it.todo('should initialize cell queue with all grid cells');
   });
 
