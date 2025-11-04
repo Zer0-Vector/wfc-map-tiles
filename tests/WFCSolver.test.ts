@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { WFCSolver } from '@/model/WFCSolver';
 import { WFCGrid } from '@/model/WFCGrid';
 import { TileDefinition } from '@/model/TileDefinition';
@@ -47,9 +47,44 @@ describe('WFCSolver', () => {
   });
 
   describe('step', () => {
-    it.todo('should return failure when grid is invalid');
-    it.todo('should return completed when grid is already complete');
-    it.todo('should collapse a cell and return it when step is successful');
+    it('should return failure when grid is invalid', () => {
+      // Force invalid state by making all cells impossible
+      for (const cell of grid.cells) {
+        cell.constrainTo([]);
+      }
+
+      const solver = new WFCSolver(grid);
+      const result = solver.step();
+      
+      expect(result.success).toBe(false);
+      expect(result.completed).toBe(false);
+      expect(result.cellCollapsed).toBeNull();
+    });
+
+    it('should return completed when grid is already complete', () => {
+      // Manually collapse all cells
+      for (const cell of grid.cells) {
+        cell.collapse(roomTile);
+      }
+
+      const solver = new WFCSolver(grid);
+      const result = solver.step();
+      
+      expect(result.success).toBe(true);
+      expect(result.completed).toBe(true);
+      expect(result.cellCollapsed).toBeNull();
+    });
+
+    it('should collapse a cell and return it when step is successful', () => {
+      const solver = new WFCSolver(grid);
+      const result = solver.step();
+      
+      expect(result.success).toBe(true);
+      expect(result.completed).toBe(false);
+      expect(result.cellCollapsed).not.toBeNull();
+      expect(result.cellCollapsed?.isCollapsed).toBe(true);
+    });
+
     it.todo('should select cell with lowest entropy');
     it.todo('should handle tie-breaking when multiple cells have same entropy');
     it.todo('should propagate constraints after collapsing a cell');
@@ -58,7 +93,18 @@ describe('WFCSolver', () => {
   });
 
   describe('solve', () => {
-    it.todo('should solve a simple 2x2 grid successfully');
+    it('should solve a simple 2x2 grid successfully', () => {
+      const simpleGrid = new WFCGrid(2, 2, [roomTile, corridorTile]);
+      const solver = new WFCSolver(simpleGrid);
+      
+      const result = solver.solve();
+      
+      expect(result.success).toBe(true);
+      expect(result.iterations).toBeGreaterThan(0);
+      expect(simpleGrid.isComplete()).toBe(true);
+      expect(simpleGrid.isValid()).toBe(true);
+    });
+
     it.todo('should solve a 3x3 grid with multiple tile types');
     it.todo('should solve larger grids within reasonable iterations');
     it.todo('should respect maximum iterations limit');
