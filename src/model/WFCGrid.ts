@@ -81,6 +81,7 @@ export class WFCGrid {
     return neighbors;
   }
 
+  // FIXME figure out how to use DynamicEntropyQueue for this
   getLowestEntropyCell(): GridPosition | null {
     let minEntropy = Infinity;
     let candidates: GridPosition[] = [];
