@@ -9,6 +9,7 @@ export interface GridPosition {
 }
 
 export class WFCGrid {
+  private readonly grid: WFCCell[][]; // column-major order, i.e. grid[y][x]
   private readonly grid: WFCCell[][];
   private readonly _width: number;
   private readonly _height: number;
@@ -21,7 +22,7 @@ export class WFCGrid {
     
     // Initialize grid with all possible tiles
     this.grid = new Array(height).fill(null).map((_, y) =>
-      new Array(width).fill(null).map((_, x) => new WFCCell(x, y, [...this._allTiles]))
+      new Array(width).fill(null).map((_, x) => new WFCCell(x, y, this._allTiles))
     );
   }
 
@@ -47,7 +48,7 @@ export class WFCGrid {
     for (let y = 0; y < this.height; y++) {
       for (let x = 0; x < this.width; x++) {
         // Reset cell with new tiles
-        this.grid[y][x] = new WFCCell(x, y, [...tiles]);
+        this.grid[y][x] = new WFCCell(x, y, tiles);
       }
     }
   }
