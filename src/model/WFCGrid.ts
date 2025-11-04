@@ -190,22 +190,18 @@ export class WFCGrid {
   }
 
   isComplete(): boolean {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        if (!this.grid[y][x].isCollapsed) {
-          return false;
-        }
+    for (const column of this.grid) {
+      if (column.some(cell => !cell.isCollapsed)) {
+        return false;
       }
     }
     return true;
   }
 
   isValid(): boolean {
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        if (!this.grid[y][x].isValid()) {
-          return false;
-        }
+    for (const column of this.grid) {
+      if (column.some(cell => !cell.isValid())) {
+        return false;
       }
     }
     return true;
