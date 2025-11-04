@@ -1,6 +1,7 @@
+import { ObservableEntropyItem } from '@/helpers/DynamicEntropyQueue';
 import type { TileDefinition } from './TileDefinition';
 
-export class WFCCell {
+export class WFCCell extends ObservableEntropyItem {
   private readonly _possibleTiles: Set<TileDefinition>;
   private _collapsed: boolean = false;
   private _finalTile?: TileDefinition;
@@ -8,6 +9,7 @@ export class WFCCell {
   public readonly y: number;
 
   constructor(x: number, y = 0, possibleTiles?: TileDefinition[]) {
+    super();
     this.x = x;
     this.y = y;
     this._possibleTiles = new Set(possibleTiles || []);
@@ -29,8 +31,8 @@ export class WFCCell {
     return this._finalTile;
   }
 
-  get entropy(): number {
-    return this._possibleTiles.size;
+  protected _updateEntropy(): void {
+    this.entropy = this._possibleTiles.size;
   }
 
   collapse(specificTile?: TileDefinition): boolean {
@@ -54,6 +56,7 @@ export class WFCCell {
     this._collapsed = true;
     this._possibleTiles.clear();
     this._possibleTiles.add(this._finalTile);
+    this._updateEntropy();
 
     return true;
   }
@@ -62,13 +65,18 @@ export class WFCCell {
     if (this._collapsed) {
       return false;
     }
-    return this._possibleTiles.delete(tile);
+    const tileWasRemoved = this._possibleTiles.delete(tile);
+    if (tileWasRemoved) {
+      this._updateEntropy();
+      return true;
+    }
+    return false;
   }
 
   constrainTo(allowedTiles: TileDefinition[]): boolean {
     const allowedSet = new Set(allowedTiles);
     const initialSize = this._possibleTiles.size;
-    
+
     // Remove tiles that are not in the allowed set
     for (const tile of this._possibleTiles) {
       if (!allowedSet.has(tile)) {
@@ -77,19 +85,15 @@ export class WFCCell {
     }
 
     // Return true if constraints were applied
-    return this._possibleTiles.size < initialSize;
+    if (this._possibleTiles.size < initialSize) {
+      this._updateEntropy();
+      return true;
+    }
+    return false;
   }
 
   isValid(): boolean {
     return this._possibleTiles.size > 0;
   }
 
-  setPossibleTiles(tiles: TileDefinition[]): void {
-    this._possibleTiles.clear();
-    for (const tile of tiles) {
-      this._possibleTiles.add(tile);
-    }
-    this._collapsed = false;
-    this._finalTile = undefined;
-  }
 }
