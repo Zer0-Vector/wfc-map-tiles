@@ -25,6 +25,14 @@ export abstract class ObservableEntropyItem implements Observable<EntropyItemEve
     this._notificationManager.unsubscribe(event, observer);
   }
 
+  /**
+   * Sets the initial entropy value without triggering notifications.
+   * This should be called only during construction.
+   */
+  protected _initializeEntropy(entropy: number): void {
+    this._entropy = entropy;
+  }
+
   get entropy(): number {
     return this._entropy;
   }

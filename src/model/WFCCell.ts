@@ -13,6 +13,7 @@ export class WFCCell extends ObservableEntropyItem {
     this.x = x;
     this.y = y;
     this._possibleTiles = new Set(possibleTiles || []);
+    super._initializeEntropy(this._possibleTiles.size);
   }
 
   get possibleTiles(): TileDefinition[] {
