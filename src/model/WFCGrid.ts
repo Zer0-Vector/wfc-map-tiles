@@ -10,7 +10,6 @@ export interface GridPosition {
 
 export class WFCGrid {
   private readonly grid: WFCCell[][]; // column-major order, i.e. grid[y][x]
-  private readonly grid: WFCCell[][];
   private readonly _width: number;
   private readonly _height: number;
   private _allTiles: TileDefinition[] = [];
