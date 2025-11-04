@@ -82,10 +82,17 @@ export class DynamicEntropyQueue<T extends ObservableEntropyItem> {
     return this.size === 0;
   }
 
-  enqueue(item: T): void {
+  enqueueOne(item: T): void {
     const index = this._findInsertIndex(item);
     this._items.splice(index, 0, item);
     item.subscribe("entropyChanged", this._onEntropyChanged);
+  }
+
+  enqueue(item: T, ...moreItems: T[]): void {
+    this.enqueueOne(item);
+    for (const moreItem of moreItems) {
+      this.enqueueOne(moreItem);
+    }
   }
 
   protected _findInsertIndex(item: T): number {
