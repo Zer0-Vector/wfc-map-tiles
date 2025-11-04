@@ -132,4 +132,40 @@ describe('DynamicPriorityQueue', () => {
     expect(updatedItem?.name).toBe("task1");
   });
 
+  it("peekEqualEntropy returns empty array for empty queue", () => {
+    const pq = new TestDynamicPriorityQueue();
+
+    const items = pq.peekEqualEntropy();
+
+    expect(items).toHaveLength(0);
+  });
+
+  it("peekEqualEntropy returns all items with lowest entropy", () => {
+    const pq = new TestDynamicPriorityQueue();
+    const item1 = new TestItem("task1", 1);
+    const item2 = new TestItem("task2", 1);
+    const item3 = new TestItem("task3", 2);
+    pq.enqueue(item1, item2, item3);
+
+    let items = pq.peekEqualEntropy();
+
+    expect(items).toHaveLength(2);
+    expect(items).toContain(item1);
+    expect(items).toContain(item2);
+
+    item3.entropy = item1.entropy;
+    items = pq.peekEqualEntropy();
+    
+    expect(items).toHaveLength(3);
+    expect(items).toContain(item1);
+    expect(items).toContain(item2);
+    expect(items).toContain(item3);
+
+    item2.entropy = 5;
+    items = pq.peekEqualEntropy();
+
+    expect(items).toHaveLength(2);
+    expect(items).toContain(item1);
+    expect(items).toContain(item3);
+  });
 });
