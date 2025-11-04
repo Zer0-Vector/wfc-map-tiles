@@ -5,9 +5,39 @@ import { TileDefinition } from '@/model/TileDefinition';
 import type { EdgeType } from '@/model/EdgeType';
 
 describe('WFCSolver', () => {
+  let wallEdge: EdgeType;
+  let doorEdge: EdgeType;
+  let roomTile: TileDefinition;
+  let corridorTile: TileDefinition;
+  let grid: WFCGrid;
+
+  beforeEach(() => {
+    // Create edge types
+    wallEdge = { id: 'wall' };
+    doorEdge = { id: 'door' };
+    
+    // Create tile definitions
+    roomTile = new TileDefinition({
+      id: "room",
+      edges: { N: wallEdge, S: wallEdge, W: wallEdge, E: doorEdge }
+    });
+    corridorTile = new TileDefinition({
+      id: "corridor", 
+      edges: { N: doorEdge, S: doorEdge, W: doorEdge, E: doorEdge }
+    });
+
+    // Create grid
+    grid = new WFCGrid(3, 3, [roomTile, corridorTile]);
+  });
   describe('constructor', () => {
-    it.todo('should create solver with default options');
-    it.todo('should create solver with custom options');
+    it('should create solver with default options', () => {
+      expect(() => new WFCSolver(grid)).not.toThrow();
+    });
+
+    it('should create solver with custom options', () => {
+      expect(() => new WFCSolver(grid, { maxIterations: 500 })).not.toThrow();
+    });
+
     it.todo('should initialize cell queue with all grid cells');
   });
 
