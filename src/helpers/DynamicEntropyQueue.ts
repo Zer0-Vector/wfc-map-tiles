@@ -32,7 +32,9 @@ export abstract class ObservableEntropyItem implements Observable<EntropyItemEve
   set entropy(entropy: number) {
     const oldValue = this._entropy;
     this._entropy = entropy;
-    this._notificationManager.notify("entropyChanged", { item: this, oldValue });
+    if (oldValue !== entropy) {
+      this._notificationManager.notify("entropyChanged", { item: this, oldValue });
+    }
   }
 }
 
