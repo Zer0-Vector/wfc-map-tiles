@@ -1,6 +1,6 @@
-import { DynamicPriorityQueue, PrioritizedItem } from "@/helpers/DynamicPriorityQueue";
+import { DynamicEntropyQueue, ObservableEntropyItem } from "@/helpers/DynamicEntropyQueue";
 
-class TestItem extends PrioritizedItem {
+class TestItem extends ObservableEntropyItem {
   name: string;
 
   constructor(name: string, priority: number) {
@@ -9,7 +9,7 @@ class TestItem extends PrioritizedItem {
   }
 }
 
-class TestDynamicPriorityQueue extends DynamicPriorityQueue<TestItem> {
+class TestDynamicPriorityQueue extends DynamicEntropyQueue<TestItem> {
   // This simplifies test code and allows exposing internals if needed in the future
 }
 
@@ -77,7 +77,7 @@ describe('DynamicPriorityQueue', () => {
     
     expect(pq.peek()?.name).toBe("task2");
     
-    item1.priority = 0; 
+    item1.entropy = 0; 
     const updatedItem = pq.dequeue();
 
     expect(updatedItem?.name).toBe("task1");
