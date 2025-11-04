@@ -33,6 +33,10 @@ export class WFCGrid {
     return this._height;
   }
 
+  get size(): number {
+    return this._width * this._height;
+  }
+
   get cells(): WFCCell[] {
     return this.grid.flat();
   }
