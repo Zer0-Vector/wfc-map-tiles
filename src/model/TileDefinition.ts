@@ -1,6 +1,6 @@
 import { isEdgeType, type EdgeType } from './EdgeType';
 import type { Size } from './Size';
-import type { TileEdgeMap } from './MapTile';
+import { CardinalDirectionValues, type TileEdgeMap } from './MapTile';
 
 export interface ReflectionOptions {
   vertical?: boolean;
@@ -24,7 +24,7 @@ export class TileDefinition {
   public readonly rotation?: number[];
   public readonly reflection?: ReflectionOptions;
 
-  constructor(config: TileDefinitionConfig) {   
+  constructor(config: TileDefinitionConfig) {
     this.id = config.id;
     this.width = config.width;
     this.height = config.height;
@@ -46,5 +46,47 @@ export class TileDefinition {
       // Directional edges
       this.edges = config.edges;
     }
+  }
+
+  rotate(turns: number): TileDefinition {
+    const directions = CardinalDirectionValues
+    const newEdges: TileEdgeMap = { ...this.edges };
+
+    const actualTurns = turns % directions.length;
+    const edgeArray = directions.map(dir => this.edges[dir]);
+    const rotatedEdges = edgeArray.slice(-actualTurns).concat(edgeArray.slice(0, -actualTurns));
+
+    for (let i = 0; i < directions.length; i++) {
+      const dir = directions[i];
+      newEdges[dir] = rotatedEdges[i];
+    }
+
+    return new TileDefinition({
+      id: this.id,
+      width: this.width,
+      height: this.height,
+      edges: newEdges,
+      rotation: this.rotation,
+      reflection: this.reflection
+    });
+  }
+
+  reflect(axis: 'vertical' | 'horizontal'): TileDefinition {
+    const newEdges: TileEdgeMap = { ...this.edges };
+    if (axis === 'vertical') {
+      // Swap East and West
+      [newEdges.E, newEdges.W] = [newEdges.W, newEdges.E];
+    } else if (axis === 'horizontal') {
+      // Swap North and South
+      [newEdges.N, newEdges.S] = [newEdges.S, newEdges.N];
+    }
+    return new TileDefinition({
+      id: this.id,
+      width: this.width,
+      height: this.height,
+      edges: newEdges,
+      rotation: this.rotation,
+      reflection: this.reflection
+    });
   }
 }
