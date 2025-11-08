@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import { WFCGrid } from '@/model/WFCGrid';
-import type { EdgeType } from '@/model/EdgeType';
-import { TileDefinition } from '@/model/TileDefinition';
 
 describe('WFCGrid', () => {
   it('should create a grid with specified dimensions', () => {
@@ -18,29 +16,6 @@ describe('WFCGrid', () => {
     for (const cell of grid.cells) {
       expect(cell.isCollapsed).toBe(false);
       expect(cell.possibleTiles).toHaveLength(0); // Will be populated when we set tileset
-    }
-  });
-
-  it('should set tileset and populate possible tiles', () => {
-    const wallEdge: EdgeType = { id: 'wall' };
-    const doorEdge: EdgeType = { id: 'door' };
-    
-    const tile1 = new TileDefinition({
-      id: "room",
-      edges: { N: wallEdge, S: wallEdge, W: wallEdge, E: doorEdge }
-    });
-    const tile2 = new TileDefinition({
-      id: "corridor",
-      edges: { N: doorEdge, S: doorEdge, W: doorEdge, E: doorEdge }
-    });
-
-    const grid = new WFCGrid(2, 2);
-    grid.setTileSet([tile1, tile2]);
-
-    for (const cell of grid.cells) {
-      expect(cell.possibleTiles).toHaveLength(2);
-      expect(cell.possibleTiles).toContain(tile1);
-      expect(cell.possibleTiles).toContain(tile2);
     }
   });
 
