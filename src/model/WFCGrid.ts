@@ -12,7 +12,7 @@ export class WFCGrid {
   private readonly grid: WFCCell[][]; // column-major order, i.e. grid[y][x]
   private readonly _width: number;
   private readonly _height: number;
-  private _allTiles: TileDefinition[] = [];
+  private readonly _allTiles: TileDefinition[] = [];
 
   constructor(width: number, height: number, tiles?: TileDefinition[]) {
     this._width = width;
@@ -45,15 +45,16 @@ export class WFCGrid {
     return this._allTiles;
   }
 
-  setTileSet(tiles: TileDefinition[]): void {
-    this._allTiles = tiles;
-    // Update all cells with new possible tiles
-    for (let y = 0; y < this.height; y++) {
-      for (let x = 0; x < this.width; x++) {
-        // Reset cell with new tiles
-        this.grid[y][x] = new WFCCell(x, y, tiles);
+  static logGrid(grid: WFCGrid): void {
+    let output = '\n';
+    for (let y = 0; y < grid.height; y++) {
+      for (let x = 0; x < grid.width; x++) {
+        const cell = grid.getCell(x, y);
+        output += (cell!.finalTile?.id || '[ ]') + ' ';
       }
+      output += '\n';
     }
+    console.log(output);
   }
 
   getCell(x: number, y: number): WFCCell | undefined {
@@ -206,5 +207,39 @@ export class WFCGrid {
       }
     }
     return true;
+  }
+
+  get completedCellsCount(): number {
+    let count = 0;
+    for (const column of this.grid) {
+      count += column.filter(cell => cell.isCollapsed).length;
+    }
+    return count;
+  }
+
+  toString(): string {
+
+    let maxIdLength = 0;
+    for (const cell of this.cells) {
+      if (cell.finalTile?.id) {
+        maxIdLength = Math.max(maxIdLength, cell.finalTile.id.length);
+      }
+    }
+
+    let output = '';
+    for (let y = 0; y < this.height; y++) {
+      for (let x = 0; x < this.width; x++) {
+        const cell = this.getCell(x, y);
+        if (!cell) {
+          output += "[ ".padEnd(maxIdLength) + " ]";
+        } else if (cell.isCollapsed) {
+          output += "[ " + cell.finalTile?.id.padEnd(maxIdLength) + " ]";
+        } else {
+          output += "[ ".padEnd(maxIdLength/2) + "?".padEnd(maxIdLength/2) + " ]";
+        }
+      }
+      output += '\n';
+    }
+    return output;
   }
 }
