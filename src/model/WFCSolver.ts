@@ -4,6 +4,7 @@ import type { WFCCell } from "./WFCCell";
 
 export interface WFCOptions {
   maxIterations?: number;
+  rng?: () => number;
 }
 
 export interface WFCResult {
@@ -21,7 +22,7 @@ export class WFCSolver {
   public static readonly DEFAULT_MAX_ITERATIONS = 5000;
   private readonly grid: WFCGrid;
   private readonly cellQueue: DynamicEntropyQueue<WFCCell>;
-  private readonly options: WFCOptions;
+  private readonly options: Required<WFCOptions>;
 
   constructor(grid: WFCGrid, options: WFCOptions = {}) {
     if (grid.size === 0) {
@@ -34,7 +35,11 @@ export class WFCSolver {
     
     this.grid = grid;
     this.cellQueue = new DynamicEntropyQueue(grid.cells);
-    this.options = { maxIterations: 1000, ...options };
+    this.options = { 
+      maxIterations: 1000, 
+      rng: () => Math.random(),
+      ...options 
+    };
   }
 
   solve(): WFCResult {
@@ -92,8 +97,8 @@ export class WFCSolver {
     console.log(`Performing step ${this.grid.completedCellsCount + 1}`);
 
     // Find cell with lowest entropy
-    const position = this.grid.getLowestEntropyCell();
-    if (!position) {
+    const positions = this.grid.getLowestEntropyCells();
+    if (positions.length === 0) {
       // Q: is this actually an invalid state? I thought this would mean the grid is complete
       console.warn(`No valid cell found with lowest entropy`);
       return {
@@ -103,12 +108,14 @@ export class WFCSolver {
       };
     }
 
-    console.log(`Lowest entropy cell found at (${position.x}, ${position.y})`);
+    const selectedPosition = positions[Math.floor((this.options.rng()) * positions.length)];
+
+    console.log(`Lowest entropy cell found at (${selectedPosition.x}, ${selectedPosition.y})`);
     
     // Get the cell and collapse it
-    const cell = this.grid.getCell(position.x, position.y);
+    const cell = this.grid.getCell(selectedPosition.x, selectedPosition.y);
     if (!cell || cell.isCollapsed) {
-      console.warn(`Cell at (${position.x}, ${position.y}) ${cell ? "is already collapsed" : "not found"}`);
+      console.warn(`Cell at (${selectedPosition.x}, ${selectedPosition.y}) ${cell ? "is already collapsed" : "not found"}`);
       return {
         cellCollapsed: null,
         success: false,
@@ -116,12 +123,12 @@ export class WFCSolver {
       };
     }
 
-    console.log(`Collapsing cell at (${position.x}, ${position.y})`);
+    console.log(`Collapsing cell at (${selectedPosition.x}, ${selectedPosition.y})`);
     
     // Collapse the cell
     const collapsed = cell.collapse();
     if (!collapsed) {
-      console.log(`Failed to collapse cell at (${position.x}, ${position.y}). ${cell.possibleTiles.length} possible tiles remained.`);
+      console.log(`Failed to collapse cell at (${selectedPosition.x}, ${selectedPosition.y}). ${cell.possibleTiles.length} possible tiles remained.`);
       return {
         cellCollapsed: null,
         success: false,
@@ -129,12 +136,12 @@ export class WFCSolver {
       };
     }
 
-    console.log(`Cell at (${position.x}, ${position.y}) collapsed to tile "${cell.finalTile?.id}"`);
+    console.log(`Cell at (${selectedPosition.x}, ${selectedPosition.y}) collapsed to tile "${cell.finalTile?.id}"`);
 
     // Propagate constraints
-    const propagationSuccess = this.grid.propagateConstraints(position.x, position.y);
+    const propagationSuccess = this.grid.propagateConstraints(selectedPosition.x, selectedPosition.y);
     if (!propagationSuccess) {
-      console.warn(`Constraint propagation failed after collapsing cell at (${position.x}, ${position.y})`);
+      console.warn(`Constraint propagation failed after collapsing cell at (${selectedPosition.x}, ${selectedPosition.y})`);
       return {
         cellCollapsed: cell,
         success: false,
@@ -142,7 +149,7 @@ export class WFCSolver {
       };
     }
 
-    console.log(`Constraint propagation succeeded after collapsing cell at (${position.x}, ${position.y})`);
+    console.log(`Constraint propagation succeeded after collapsing cell at (${selectedPosition.x}, ${selectedPosition.y})`);
 
     return {
       cellCollapsed: cell,

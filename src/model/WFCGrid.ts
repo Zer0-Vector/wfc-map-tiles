@@ -83,7 +83,7 @@ export class WFCGrid {
   }
 
   // FIXME figure out how to use DynamicEntropyQueue for this
-  getLowestEntropyCell(): GridPosition | null {
+  getLowestEntropyCells(): GridPosition[] {
     let minEntropy = Infinity;
     let candidates: GridPosition[] = [];
 
@@ -101,13 +101,8 @@ export class WFCGrid {
       }
     }
 
-    if (candidates.length === 0) {
-      return null;
-    }
-
     // Random selection among candidates with same entropy
-    const randomIndex = Math.floor(Math.random() * candidates.length);
-    return candidates[randomIndex];
+    return candidates;
   }
 
   propagateConstraints(startX: number, startY: number): boolean {
