@@ -123,8 +123,34 @@ describe('WFCSolver', () => {
       expect(result.cellCollapsed?.isCollapsed).toBe(true);
     });
 
-    it.todo('should select cell with lowest entropy');
-    it.todo('should handle tie-breaking when multiple cells have same entropy');
+    it('should select cell with lowest entropy', () => {
+      const solver = new WFCSolver(grid);
+      
+      // Manually constrain one cell to have lower entropy
+      const corner = grid.getCell(0, 0)!;
+      corner.constrainTo([roomTile]);
+      
+      const result = solver.step();
+      
+      expect(result.success).toBe(true);
+      expect(result.cellCollapsed).toBe(corner);
+      expect(corner.isCollapsed).toBe(true);
+    });
+    it('should handle tie-breaking when multiple cells have same entropy', () => {
+      const solver = new WFCSolver(grid);
+      
+      // Initially all cells have the same entropy
+      const initialEntropies = grid.cells.map(cell => cell.entropy);
+      const uniqueEntropies = new Set(initialEntropies);
+      
+      expect(uniqueEntropies.size).toBe(1); // All cells have same entropy
+      
+      const result = solver.step();
+      
+      expect(result.success).toBe(true);
+      expect(result.cellCollapsed).not.toBeNull();
+      // Should pick one of the cells (implementation-specific which one)
+    });
     it('should propagate constraints after collapsing a cell', () => {
       const solver = new WFCSolver(grid);
       const initialEntropies = grid.cells.map(cell => cell.entropy);
