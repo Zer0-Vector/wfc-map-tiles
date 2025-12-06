@@ -145,7 +145,7 @@ describe('DynamicPriorityQueue', () => {
     const item1 = new TestItem("task1", 1);
     const item2 = new TestItem("task2", 1);
     const item3 = new TestItem("task3", 2);
-    pq.enqueue(item1, item2, item3);
+    pq.enqueueAll([item1, item2, item3]);
 
     let items = pq.peekEqualEntropy();
 
