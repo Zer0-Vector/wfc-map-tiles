@@ -1,4 +1,3 @@
-import { DynamicEntropyQueue } from "@/helpers/DynamicEntropyQueue";
 import type { WFCGrid } from "./WFCGrid";
 import type { WFCCell } from "./WFCCell";
 
@@ -21,7 +20,6 @@ export interface WFCStepResult {
 export class WFCSolver {
   public static readonly DEFAULT_MAX_ITERATIONS = 5000;
   private readonly grid: WFCGrid;
-  private readonly cellQueue: DynamicEntropyQueue<WFCCell>;
   private readonly options: Required<WFCOptions>;
 
   constructor(grid: WFCGrid, options: WFCOptions = {}) {
@@ -34,7 +32,6 @@ export class WFCSolver {
     }
     
     this.grid = grid;
-    this.cellQueue = new DynamicEntropyQueue(grid.cells);
     this.options = { 
       maxIterations: 1000, 
       rng: () => Math.random(),
