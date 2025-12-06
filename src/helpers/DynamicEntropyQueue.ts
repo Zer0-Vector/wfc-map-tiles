@@ -69,9 +69,7 @@ export class DynamicEntropyQueue<T extends ObservableEntropyItem> {
       this._items.splice(this._findInsertIndex(item), 0, item);
     }
 
-    for (const item of items) {
-      this.enqueue(item);
-    }
+    this.enqueueAll(items);
   }
 
   get size(): number {
@@ -82,16 +80,33 @@ export class DynamicEntropyQueue<T extends ObservableEntropyItem> {
     return this.size === 0;
   }
 
-  enqueueOne(item: T): void {
-    const index = this._findInsertIndex(item);
-    this._items.splice(index, 0, item);
+  /**
+   * Adds a single item to the queue in the correct position based on its entropy.
+   * The item will be automatically repositioned if its entropy changes while in the queue.
+   * @param item - The item to add to the queue
+   */
+  enqueue(item: T): void {
+
+    if (this.size === 0 || item.entropy >= this._items[this.size - 1].entropy) {
+      this._items.push(item);
+    } else if(item.entropy <= this._items[0].entropy) {
+      this._items.unshift(item);
+    } else {
+      const index = this._findInsertIndex(item);
+      this._items.splice(index, 0, item);
+    }
+
     item.subscribe("entropyChanged", this._onEntropyChanged);
   }
 
-  enqueue(item: T, ...moreItems: T[]): void {
-    this.enqueueOne(item);
-    for (const moreItem of moreItems) {
-      this.enqueueOne(moreItem);
+  /**
+   * Adds multiple items to the queue.
+   * Each item will be positioned correctly based on its entropy.
+   * @param items - Array of items to add to the queue
+   */
+  enqueueAll(items: T[]): void {
+    for (const item of items) {
+      this.enqueue(item);
     }
   }
 
